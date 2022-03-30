@@ -30,7 +30,7 @@ public class PeriodicUserFetcher extends AbstractVerticle
 				.with(item ->
 				{
 					LOG.info("Fetch all users!");
-					client.get("/users")
+					client.get("/vertx/users")
 							.send()
 							.subscribe()
 							.with(result ->

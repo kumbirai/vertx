@@ -9,5 +9,8 @@
         <module name="vertx-mutiny" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="vertx-mutiny" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
