@@ -5,13 +5,12 @@ import org.testcontainers.utility.DockerImageName;
 
 public class EmbeddedPostgres
 {
-	private EmbeddedPostgres()
-	{
-	}
-
 	static final String DATABASE_NAME = "users";
 	static final String USERNAME = "postgres";
 	static final String PASSWORD = "secret";
+	private EmbeddedPostgres()
+	{
+	}
 
 	static int startPostgres()
 	{

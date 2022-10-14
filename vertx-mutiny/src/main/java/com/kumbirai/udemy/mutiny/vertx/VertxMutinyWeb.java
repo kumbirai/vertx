@@ -24,8 +24,7 @@ public class VertxMutinyWeb extends AbstractVerticle
 		Vertx.vertx()
 				.deployVerticle(new VertxMutinyWeb())
 				.subscribe()
-				.with(id -> LOG.info("Started: {}",
-						id));
+				.with(id -> LOG.info("Started: {}", id));
 	}
 
 	@Override
@@ -49,18 +48,15 @@ public class VertxMutinyWeb extends AbstractVerticle
 		final var responseBody = new JsonArray();
 		Faker faker = new Faker();
 		Multi.createFrom()
-				.items(IntStream.rangeClosed(1,
-								ThreadLocalRandom.current()
-										.nextInt(20))
-						.boxed()
-						.map(num -> new JsonObject().put("name",
-								faker.name()
-										.fullName())))
+				.items(IntStream.rangeClosed(1, ThreadLocalRandom.current()
+								.nextInt(20))
+							   .boxed()
+							   .map(num -> new JsonObject().put("name", faker.name()
+									   .fullName())))
 				.onItem()
 				.transform(responseBody::add)
 				.subscribe()
-				.with(item -> LOG.debug("Users Found {}",
-						item.encode()));
+				.with(item -> LOG.debug("Users Found {}", item.encode()));
 
 		return Uni.createFrom()
 				.item(responseBody);

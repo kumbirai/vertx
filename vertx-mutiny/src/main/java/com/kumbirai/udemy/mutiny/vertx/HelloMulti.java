@@ -17,26 +17,20 @@ public class HelloMulti
 		DecimalFormat decimalFormat = new DecimalFormat("#,###");
 		// Multi represents a stream of data. A stream can emit 0, 1, n, or an infinite number of items.
 		Multi.createFrom()
-				.items(IntStream.rangeClosed(1,
-								15)
-						.boxed())
+				.items(IntStream.rangeClosed(1, 15)
+							   .boxed())
 				.onItem()
-				.transform(value -> IntStream.rangeClosed(1,
-								20)
+				.transform(value -> IntStream.rangeClosed(1, 20)
 						.boxed()
-						.map(num -> decimalFormat.format(Math.pow(value,
-								num)))
+						.map(num -> decimalFormat.format(Math.pow(value, num)))
 						.collect(Collectors.toList()))
 				.onFailure()
-				.invoke(failure -> LOG.error("Transformation failed with: ",
-						failure))
+				.invoke(failure -> LOG.error("Transformation failed with: ", failure))
 				.onItem()
 				.transform(String::valueOf)
 				.select()
 				.first(10)
 				.subscribe()
-				.with(LOG::info,
-						failure -> LOG.error("Failed with: ",
-								failure));
+				.with(LOG::info, failure -> LOG.error("Failed with: ", failure));
 	}
 }

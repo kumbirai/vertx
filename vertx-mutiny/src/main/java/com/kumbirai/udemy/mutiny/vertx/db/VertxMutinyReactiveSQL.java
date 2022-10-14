@@ -26,14 +26,11 @@ public class VertxMutinyReactiveSQL extends AbstractVerticle
 	{
 		var port = EmbeddedPostgres.startPostgres();
 
-		final var options = new DeploymentOptions().setConfig(new JsonObject().put("port",
-				port));
+		final var options = new DeploymentOptions().setConfig(new JsonObject().put("port", port));
 		Vertx.vertx()
-				.deployVerticle(VertxMutinyReactiveSQL::new,
-						options)
+				.deployVerticle(VertxMutinyReactiveSQL::new, options)
 				.subscribe()
-				.with(id -> LOG.info("Started: {}",
-						id));
+				.with(id -> LOG.info("Started: {}", id));
 	}
 
 	@Override
@@ -44,19 +41,14 @@ public class VertxMutinyReactiveSQL extends AbstractVerticle
 		vertx.periodicStream(5000L)
 				.toMulti()
 				.subscribe()
-				.with(item -> LOG.info("{}",
-						LocalTime.now()
-								.getSecond()));
+				.with(item -> LOG.info("{}", LocalTime.now()
+						.getSecond()));
 		vertx.deployVerticle(new CreateUsers(db))
 				.subscribe()
-				.with(id -> LOG.info("Started: {} with id {}",
-						CreateUsers.class.getSimpleName(),
-						id));
+				.with(id -> LOG.info("Started: {} with id {}", CreateUsers.class.getSimpleName(), id));
 		vertx.deployVerticle(new GetUsers())
 				.subscribe()
-				.with(id -> LOG.info("Started: {} with id {}",
-						GetUsers.class.getSimpleName(),
-						id));
+				.with(id -> LOG.info("Started: {} with id {}", GetUsers.class.getSimpleName(), id));
 
 		var router = Router.router(vertx);
 		router.route()
@@ -73,24 +65,19 @@ public class VertxMutinyReactiveSQL extends AbstractVerticle
 	private Uni<JsonArray> executeQuery(Pool db)
 	{
 		LOG.info("Executing DB query to find all users...");
-		return db.query("SELECT * from users")
+		return db.query("SELECT * from users u order by u.id")
 				.execute()
 				.onItem()
 				.transform(rows ->
-				{
-					var data = new JsonArray();
-					LOG.info("Row count {}",
-							rows.rowCount());
-					rows.forEach(row -> data.add(row.toJson()));
-					LOG.info("Data count {}",
-							data.size());
-					LOG.info("Return data: {}",
-							data);
-					return data;
-				})
+						   {
+							   var data = new JsonArray();
+							   LOG.info("Row count {}", rows.rowCount());
+							   rows.forEach(row -> data.add(row.toJson()));
+							   LOG.info("Data count {}", data.size());
+							   return data;
+						   })
 				.onFailure()
-				.invoke(failure -> LOG.error("Failed query: ",
-						failure))
+				.invoke(failure -> LOG.error("Failed query: ", failure))
 				.onFailure()
 				.recoverWithItem(new JsonArray());
 	}
@@ -105,9 +92,7 @@ public class VertxMutinyReactiveSQL extends AbstractVerticle
 
 		var poolOptions = new PoolOptions().setMaxSize(5);
 
-		return PgPool.pool(vertx,
-				connectOptions,
-				poolOptions);
+		return PgPool.pool(vertx, connectOptions, poolOptions);
 	}
 
 	private void failureHandler(RoutingContext routingContext)

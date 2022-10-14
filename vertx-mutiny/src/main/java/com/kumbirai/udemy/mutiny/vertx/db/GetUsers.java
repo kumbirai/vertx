@@ -15,24 +15,22 @@ public class GetUsers extends AbstractVerticle
 	@Override
 	public Uni<Void> asyncStart()
 	{
-		var client = WebClient.create(vertx,
-				new WebClientOptions().setDefaultHost("localhost")
-						.setDefaultPort(VertxMutinyReactiveSQL.HTTP_SERVER_PORT));
+		var client = WebClient.create(vertx, new WebClientOptions().setDefaultHost("localhost")
+				.setDefaultPort(VertxMutinyReactiveSQL.HTTP_SERVER_PORT));
 
 		vertx.periodicStream(15000L)
 				.toMulti()
 				.subscribe()
 				.with(item ->
-				{
-					LOG.info("Calling GET localhost users");
-					client.get("/users")
-							.send()
-							.onItem()
-							.transform(HttpResponse::bodyAsJsonArray)
-							.subscribe()
-							.with(users -> LOG.debug("Users: {}",
-									users));
-				});
+					  {
+						  LOG.info("Calling GET localhost users");
+						  client.get("/users")
+								  .send()
+								  .onItem()
+								  .transform(HttpResponse::bodyAsJsonArray)
+								  .subscribe()
+								  .with(users -> LOG.debug("Users: {}", users));
+					  });
 
 		return Uni.createFrom()
 				.voidItem();

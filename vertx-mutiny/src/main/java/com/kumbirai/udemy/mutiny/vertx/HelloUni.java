@@ -18,17 +18,13 @@ public class HelloUni
 				.onItem()
 				.transform(String::toUpperCase)
 				.subscribe()
-				.with(item -> LOG.info("Item: {}",
-						item));
+				.with(item -> LOG.info("Item: {}", item));
 
 		Uni.createFrom()
 				.item("Ignored due to failure")
 				.onItem()
 				.castTo(Integer.class)
 				.subscribe()
-				.with(item -> LOG.info("Item: {}",
-								item),
-						failure -> LOG.error("Failed with: ",
-								failure));
+				.with(item -> LOG.info("Item: {}", item), failure -> LOG.error("Failed with: ", failure));
 	}
 }

@@ -38,12 +38,11 @@ public class CreateUsers extends AbstractVerticle
 		LOG.info("Creating more users...");
 		Faker faker = new Faker();
 		Multi.createFrom()
-				.items(IntStream.rangeClosed(1,
-								ThreadLocalRandom.current()
-										.nextInt(6))
-						.boxed()
-						.map(num -> faker.name()
-								.fullName()))
+				.items(IntStream.rangeClosed(1, ThreadLocalRandom.current()
+								.nextInt(6))
+							   .boxed()
+							   .map(num -> faker.name()
+									   .fullName()))
 				.onItem()
 				.transform(fullName -> db.preparedQuery("INSERT INTO users(name) VALUES ($1) RETURNING (id)")
 						.execute(Tuple.of(fullName))
@@ -52,12 +51,11 @@ public class CreateUsers extends AbstractVerticle
 								.next()
 								.getLong("id"))
 						.subscribe()
-						.with(id -> LOG.debug("New Id {}",
-								id)))
+						.with(id -> LOG.debug("New Id {}", id)))
 				.subscribe()
 				.with(item ->
-				{
-					return;
-				});
+					  {
+						  return;
+					  });
 	}
 }
