@@ -18,14 +18,10 @@ public class MainVerticle extends AbstractVerticle
 	public static void main(String[] args)
 	{
 		var vertx = Vertx.vertx();
-		vertx.exceptionHandler(error -> LOG.error("Unhandled:",
-				error));
+		vertx.exceptionHandler(error -> LOG.error("Unhandled:", error));
 		vertx.deployVerticle(new MainVerticle())
-				.onFailure(err -> LOG.error("Failed to deploy:",
-						err))
-				.onSuccess(id -> LOG.info(DEPLOYED_WITH_ID,
-						MainVerticle.class.getSimpleName(),
-						id));
+				.onFailure(err -> LOG.error("Failed to deploy:", err))
+				.onSuccess(id -> LOG.info(DEPLOYED_WITH_ID, MainVerticle.class.getSimpleName(), id));
 	}
 
 	@Override
@@ -33,9 +29,7 @@ public class MainVerticle extends AbstractVerticle
 	{
 		vertx.deployVerticle(VersionInfoVerticle.class.getName())
 				.onFailure(startPromise::fail)
-				.onSuccess(id -> LOG.info(DEPLOYED_WITH_ID,
-						VersionInfoVerticle.class.getSimpleName(),
-						id))
+				.onSuccess(id -> LOG.info(DEPLOYED_WITH_ID, VersionInfoVerticle.class.getSimpleName(), id))
 				.compose(next -> migrateDatabase())
 				.onFailure(startPromise::fail)
 				.onSuccess(id -> LOG.info("Migrated db schema to latest version!"))
@@ -45,28 +39,23 @@ public class MainVerticle extends AbstractVerticle
 	private Future<Void> migrateDatabase()
 	{
 		return ConfigLoader.load(vertx)
-				.compose(config -> FlywayMigration.migrate(vertx,
-						config.getDbConfig()));
+				.compose(config -> FlywayMigration.migrate(vertx, config.getDbConfig()));
 	}
 
 	private Future<String> deployRestApiVerticle(final Promise<Void> startPromise)
 	{
-		return vertx.deployVerticle(RestApiVerticle.class.getName(),
-						new DeploymentOptions().setInstances(halfProcessors()))
+		return vertx.deployVerticle(RestApiVerticle.class.getName(), new DeploymentOptions().setInstances(halfProcessors()))
 				.onFailure(startPromise::fail)
 				.onSuccess(id ->
-				{
-					LOG.info(DEPLOYED_WITH_ID,
-							RestApiVerticle.class.getSimpleName(),
-							id);
-					startPromise.complete();
-				});
+						   {
+							   LOG.info(DEPLOYED_WITH_ID, RestApiVerticle.class.getSimpleName(), id);
+							   startPromise.complete();
+						   });
 	}
 
 	private int halfProcessors()
 	{
-		return Math.max(1,
-				Runtime.getRuntime()
-						.availableProcessors() / 2);
+		return Math.max(1, Runtime.getRuntime()
+				.availableProcessors() / 2);
 	}
 }

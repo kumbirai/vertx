@@ -27,20 +27,14 @@ public class RequestResponseExampleJSON
 		{
 			startPromise.complete();
 			var eventBus = vertx.eventBus();
-			final var message = new JsonObject().put("message",
-							"Hello World!")
-					.put("version",
-							1);
-			LOG.debug("Sending: {}",
-					message);
-			eventBus.<JsonArray>request(ADDRESS,
-					message,
-					reply ->
-					{
-						LOG.debug("Response: {}",
-								reply.result()
-										.body());
-					});
+			final var message = new JsonObject().put("message", "Hello World!")
+					.put("version", 1);
+			LOG.debug("Sending: {}", message);
+			eventBus.<JsonArray>request(ADDRESS, message, reply ->
+			{
+				LOG.debug("Response: {}", reply.result()
+						.body());
+			});
 		}
 	}
 
@@ -53,15 +47,13 @@ public class RequestResponseExampleJSON
 		{
 			startPromise.complete();
 			vertx.eventBus()
-					.<JsonObject>consumer(RequestVerticle.ADDRESS,
-							message ->
-							{
-								LOG.debug("Received Message: {}",
-										message.body());
-								message.reply(new JsonArray().add("one")
-										.add("two")
-										.add("three"));
-							});
+					.<JsonObject>consumer(RequestVerticle.ADDRESS, message ->
+					{
+						LOG.debug("Received Message: {}", message.body());
+						message.reply(new JsonArray().add("one")
+											  .add("two")
+											  .add("three"));
+					});
 		}
 	}
 }

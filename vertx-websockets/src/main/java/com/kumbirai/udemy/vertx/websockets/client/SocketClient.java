@@ -21,25 +21,18 @@ public class SocketClient extends AbstractVerticle
 		startPromise.complete();
 		var client = vertx.createHttpClient();
 
-		client.webSocket(8900,
-				"localhost",
-				WebSocketHandler.PATH,
-				webSocketAsyncResult ->
-				{
-					if (webSocketAsyncResult.succeeded())
-					{
-						WebSocket socket = webSocketAsyncResult.result();
-						socket.textMessageHandler(msg -> LOG.info("Server Message:{}{}",
-										System.lineSeparator(),
-										msg))
-								.exceptionHandler(e -> LOG.error("Websocket Error: ",
-										e));
-					}
-					else
-					{
-						LOG.error("Error: ",
-								webSocketAsyncResult.cause());
-					}
-				});
+		client.webSocket(8900, "localhost", WebSocketHandler.PATH, webSocketAsyncResult ->
+		{
+			if (webSocketAsyncResult.succeeded())
+			{
+				WebSocket socket = webSocketAsyncResult.result();
+				socket.textMessageHandler(msg -> LOG.info("Server Message:{}{}", System.lineSeparator(), msg))
+						.exceptionHandler(e -> LOG.error("Websocket Error: ", e));
+			}
+			else
+			{
+				LOG.error("Error: ", webSocketAsyncResult.cause());
+			}
+		});
 	}
 }

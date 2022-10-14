@@ -22,38 +22,34 @@ public class PeriodicUserCreator extends AbstractVerticle
 	@Override
 	public Uni<Void> asyncStart()
 	{
-		var client = WebClient.create(vertx,
-				new WebClientOptions().setDefaultHost("localhost")
-						.setDefaultPort(8080));
+		var client = WebClient.create(vertx, new WebClientOptions().setDefaultHost("localhost")
+				.setDefaultPort(8080));
 		var faker = new Faker();
 		vertx.periodicStream(Duration.ofSeconds(5)
-						.toMillis())
+									 .toMillis())
 				.toMulti()
 				.subscribe()
 				.with(item ->
-				{
-					LOG.info("Create user!");
-					var user = new Users();
-					user.name = faker.name()
-							.firstName();
-					client.post("/users")
-							.sendJson(user)
-							.subscribe()
-							.with(result ->
-							{
-								Optional<String> location = Optional.of(result.headers()
-										.get("Location"));
-								location.ifPresent(locate ->
-								{
-									LOG.info("Created User: {} - location: {}",
-											user.name,
-											locate);
-									vertx.eventBus()
-											.publish(ADDRESS,
-													locate);
-								});
-							});
-				});
+					  {
+						  LOG.info("Create user!");
+						  var user = new Users();
+						  user.name = faker.name()
+								  .firstName();
+						  client.post("/users")
+								  .sendJson(user)
+								  .subscribe()
+								  .with(result ->
+										{
+											Optional<String> location = Optional.of(result.headers()
+																							.get("Location"));
+											location.ifPresent(locate ->
+															   {
+																   LOG.info("Created User: {} - location: {}", user.name, locate);
+																   vertx.eventBus()
+																		   .publish(ADDRESS, locate);
+															   });
+										});
+					  });
 		return Uni.createFrom()
 				.voidItem();
 	}

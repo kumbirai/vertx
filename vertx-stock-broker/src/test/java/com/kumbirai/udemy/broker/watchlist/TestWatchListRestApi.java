@@ -32,32 +32,26 @@ class TestWatchListRestApi extends AbstractRestApiTest
 		client.put("/account/watchlist/" + accountId)
 				.sendJsonObject(body())
 				.onComplete(context.succeeding(response ->
-				{
-					var json = response.bodyAsJsonObject();
-					LOG.info("Response PUT: {}",
-							json);
-					assertEquals("{\"assets\":[{\"name\":\"AMZN\"},{\"name\":\"TSLA\"}]}",
-							json.encode());
-					assertEquals(200,
-							response.statusCode());
-				}))
+											   {
+												   var json = response.bodyAsJsonObject();
+												   LOG.info("Response PUT: {}", json);
+												   assertEquals("{\"assets\":[{\"name\":\"AMZN\"},{\"name\":\"TSLA\"}]}", json.encode());
+												   assertEquals(200, response.statusCode());
+											   }))
 				.compose(next ->
-				{
-					client.get("/account/watchlist/" + accountId)
-							.send()
-							.onComplete(context.succeeding(response ->
-							{
-								var json = response.bodyAsJsonObject();
-								LOG.info("Response GET: {}",
-										json);
-								assertEquals("{\"assets\":[{\"name\":\"AMZN\"},{\"name\":\"TSLA\"}]}",
-										json.encode());
-								assertEquals(200,
-										response.statusCode());
-								context.completeNow();
-							}));
-					return Future.succeededFuture();
-				});
+						 {
+							 client.get("/account/watchlist/" + accountId)
+									 .send()
+									 .onComplete(context.succeeding(response ->
+																	{
+																		var json = response.bodyAsJsonObject();
+																		LOG.info("Response GET: {}", json);
+																		assertEquals("{\"assets\":[{\"name\":\"AMZN\"},{\"name\":\"TSLA\"}]}", json.encode());
+																		assertEquals(200, response.statusCode());
+																		context.completeNow();
+																	}));
+							 return Future.succeededFuture();
+						 });
 	}
 
 	@Test
@@ -68,43 +62,35 @@ class TestWatchListRestApi extends AbstractRestApiTest
 		client.put("/account/watchlist/" + accountId)
 				.sendJsonObject(body())
 				.onComplete(context.succeeding(response ->
-				{
-					var json = response.bodyAsJsonObject();
-					LOG.info("Response PUT: {}",
-							json);
-					assertEquals("{\"assets\":[{\"name\":\"AMZN\"},{\"name\":\"TSLA\"}]}",
-							json.encode());
-					assertEquals(200,
-							response.statusCode());
-				}))
+											   {
+												   var json = response.bodyAsJsonObject();
+												   LOG.info("Response PUT: {}", json);
+												   assertEquals("{\"assets\":[{\"name\":\"AMZN\"},{\"name\":\"TSLA\"}]}", json.encode());
+												   assertEquals(200, response.statusCode());
+											   }))
 				.compose(next ->
-				{
-					client.delete("/account/watchlist/" + accountId)
-							.send()
-							.onComplete(context.succeeding(response ->
-							{
-								var json = response.bodyAsJsonObject();
-								LOG.info("Response DELETE: {}",
-										json);
-								assertEquals("{\"assets\":[{\"name\":\"AMZN\"},{\"name\":\"TSLA\"}]}",
-										json.encode());
-								assertEquals(200,
-										response.statusCode());
-								context.completeNow();
-							}));
-					return Future.succeededFuture();
-				});
+						 {
+							 client.delete("/account/watchlist/" + accountId)
+									 .send()
+									 .onComplete(context.succeeding(response ->
+																	{
+																		var json = response.bodyAsJsonObject();
+																		LOG.info("Response DELETE: {}", json);
+																		assertEquals("{\"assets\":[{\"name\":\"AMZN\"},{\"name\":\"TSLA\"}]}", json.encode());
+																		assertEquals(200, response.statusCode());
+																		context.completeNow();
+																	}));
+							 return Future.succeededFuture();
+						 });
 	}
 
 	private JsonObject body()
 	{
-		return new WatchList(Arrays.asList(new Asset("AMZN"),
-				new Asset("TSLA"))).toJsonObject();
+		return new WatchList(Arrays.asList(new Asset("AMZN"), new Asset("TSLA"))).toJsonObject();
 	}
 
 	private WebClient webClient(final Vertx vertx)
 	{
-		return WebClient.create(vertx,
-				new WebClientOptions().setDefaultPort(TEST_SERVER_PORT));
+		return WebClient.create(vertx, new WebClientOptions().setDefaultPort(TEST_SERVER_PORT));
 	}
 }

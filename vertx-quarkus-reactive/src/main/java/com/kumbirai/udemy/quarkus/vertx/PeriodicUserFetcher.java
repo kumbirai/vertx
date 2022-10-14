@@ -19,30 +19,27 @@ public class PeriodicUserFetcher extends AbstractVerticle
 	@Override
 	public Uni<Void> asyncStart()
 	{
-		var client = WebClient.create(vertx,
-				new WebClientOptions().setDefaultHost("localhost")
-						.setDefaultPort(8080));
+		var client = WebClient.create(vertx, new WebClientOptions().setDefaultHost("localhost")
+				.setDefaultPort(8080));
 
 		vertx.periodicStream(Duration.ofSeconds(5)
-						.toMillis())
+									 .toMillis())
 				.toMulti()
 				.subscribe()
 				.with(item ->
-				{
-					LOG.info("Fetch all users!");
-					client.get("/vertx/users")
-							.send()
-							.subscribe()
-							.with(result ->
-							{
-								var body = result.bodyAsJsonArray();
-								LOG.info("All users from http response: {}",
-										body);
-								vertx.eventBus()
-										.publish(ADDRESS,
-												body);
-							});
-				});
+					  {
+						  LOG.info("Fetch all users!");
+						  client.get("/vertx/users")
+								  .send()
+								  .subscribe()
+								  .with(result ->
+										{
+											var body = result.bodyAsJsonArray();
+											LOG.info("All users from http response: {}", body);
+											vertx.eventBus()
+													.publish(ADDRESS, body);
+										});
+					  });
 
 		return Uni.createFrom()
 				.voidItem();

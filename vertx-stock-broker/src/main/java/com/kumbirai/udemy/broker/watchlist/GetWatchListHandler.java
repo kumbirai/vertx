@@ -27,16 +27,14 @@ public class GetWatchListHandler implements Handler<RoutingContext>
 		{
 			context.response()
 					.setStatusCode(HttpResponseStatus.NOT_FOUND.code())
-					.end(new JsonObject().put("message",
-									"watchlist for account '" + accountId + "' not available!")
-							.put("path",
-									context.normalizedPath())
-							.toBuffer());
+					.end(new JsonObject().put("message", "watchlist for account '" + accountId + "' not available!")
+								 .put("path", context.normalizedPath())
+								 .toBuffer());
 			return;
 		}
 		context.response()
 				.end(watchList.get()
-						.toJsonObject()
-						.toBuffer());
+							 .toJsonObject()
+							 .toBuffer());
 	}
 }

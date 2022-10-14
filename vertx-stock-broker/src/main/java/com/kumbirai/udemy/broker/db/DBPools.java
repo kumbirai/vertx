@@ -18,40 +18,36 @@ public class DBPools
 	public static Pool createMySQLPool(final BrokerConfig configuration, final Vertx vertx)
 	{
 		final var connectOptions = new MySQLConnectOptions().setHost(configuration.getDbConfig()
-						.getHost())
+																			 .getHost())
 				.setPort(configuration.getDbConfig()
-						.getPort())
+								 .getPort())
 				.setDatabase(configuration.getDbConfig()
-						.getDatabase())
+									 .getDatabase())
 				.setUser(configuration.getDbConfig()
-						.getUser())
+								 .getUser())
 				.setPassword(configuration.getDbConfig()
-						.getPassword());
+									 .getPassword());
 
 		var poolOptions = new PoolOptions().setMaxSize(4);
 
-		return MySQLPool.pool(vertx,
-				connectOptions,
-				poolOptions);
+		return MySQLPool.pool(vertx, connectOptions, poolOptions);
 	}
 
 	public static Pool createPgPool(final BrokerConfig configuration, final Vertx vertx)
 	{
 		final var connectOptions = new PgConnectOptions().setHost(configuration.getDbConfig()
-						.getHost())
+																		  .getHost())
 				.setPort(configuration.getDbConfig()
-						.getPort())
+								 .getPort())
 				.setDatabase(configuration.getDbConfig()
-						.getDatabase())
+									 .getDatabase())
 				.setUser(configuration.getDbConfig()
-						.getUser())
+								 .getUser())
 				.setPassword(configuration.getDbConfig()
-						.getPassword());
+									 .getPassword());
 
 		var poolOptions = new PoolOptions().setMaxSize(4);
 
-		return PgPool.pool(vertx,
-				connectOptions,
-				poolOptions);
+		return PgPool.pool(vertx, connectOptions, poolOptions);
 	}
 }

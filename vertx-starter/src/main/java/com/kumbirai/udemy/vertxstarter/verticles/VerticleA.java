@@ -12,22 +12,17 @@ public class VerticleA extends AbstractVerticle
 	@Override
 	public void start(final Promise<Void> startPromise) throws Exception
 	{
-		LOG.debug("Start {}",
-				getClass().getName());
-		vertx.deployVerticle(new VerticleAA(),
-				whenDeployed ->
-				{
-					LOG.debug("Deployed {}",
-							VerticleAA.class.getName());
-					vertx.undeploy(whenDeployed.result());
-				});
-		vertx.deployVerticle(new VerticleAB(),
-				whenDeployed ->
-				{
-					LOG.debug("Deployed {}",
-							VerticleAB.class.getName());
-					// Do not undeploy
-				});
+		LOG.debug("Start {}", getClass().getName());
+		vertx.deployVerticle(new VerticleAA(), whenDeployed ->
+		{
+			LOG.debug("Deployed {}", VerticleAA.class.getName());
+			vertx.undeploy(whenDeployed.result());
+		});
+		vertx.deployVerticle(new VerticleAB(), whenDeployed ->
+		{
+			LOG.debug("Deployed {}", VerticleAB.class.getName());
+			// Do not undeploy
+		});
 		startPromise.complete();
 	}
 }

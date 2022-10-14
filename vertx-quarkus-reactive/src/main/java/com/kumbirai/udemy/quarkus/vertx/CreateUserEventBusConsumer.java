@@ -19,25 +19,21 @@ public class CreateUserEventBusConsumer extends AbstractVerticle
 	@Override
 	public Uni<Void> asyncStart()
 	{
-		var client = WebClient.create(vertx,
-				new WebClientOptions().setDefaultHost("localhost")
-						.setDefaultPort(8080));
+		var client = WebClient.create(vertx, new WebClientOptions().setDefaultHost("localhost")
+				.setDefaultPort(8080));
 		vertx.eventBus()
-				.<String>consumer(ADDRESS,
-						message ->
-						{
-							String body = message.body();
-							LOG.info("Consumed from Event Bus: {}",
-									body);
-							client.get(body)
-									.send()
-									.subscribe()
-									.with(response ->
-									{
-										LOG.info("-->{}",
-												response.body());
-									});
-						});
+				.<String>consumer(ADDRESS, message ->
+				{
+					String body = message.body();
+					LOG.info("Consumed from Event Bus: {}", body);
+					client.get(body)
+							.send()
+							.subscribe()
+							.with(response ->
+								  {
+									  LOG.info("-->{}", response.body());
+								  });
+				});
 		return Uni.createFrom()
 				.voidItem();
 	}

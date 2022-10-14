@@ -16,10 +16,9 @@ public class VersionInfoVerticle extends AbstractVerticle
 		ConfigLoader.load(vertx)
 				.onFailure(startPromise::fail)
 				.onSuccess(configuration ->
-				{
-					LOG.info("Current Application Version is: {}",
-							configuration.getVersion());
-					startPromise.complete();
-				});
+						   {
+							   LOG.info("Current Application Version is: {}", configuration.getVersion());
+							   startPromise.complete();
+						   });
 	}
 }

@@ -23,25 +23,20 @@ public class WebSocketHandler implements Handler<ServerWebSocket>
 	{
 		if (!PATH.equalsIgnoreCase(ws.path()))
 		{
-			LOG.info("Rejected wrong path: {}",
-					ws.path());
+			LOG.info("Rejected wrong path: {}", ws.path());
 			ws.writeFinalTextFrame("Wrong path. Only " + PATH + " is accepted!");
 			closeClient(ws);
 			return;
 		}
-		LOG.info("Opening web socket connection: {}, {}",
-				ws.path(),
-				ws.textHandlerID());
+		LOG.info("Opening web socket connection: {}, {}", ws.path(), ws.textHandlerID());
 		ws.accept();
 		ws.frameHandler(frameHandler(ws));
 		ws.endHandler(onClose ->
-		{
-			LOG.info("Closed {}",
-					ws.textHandlerID());
-			broadcast.unregister(ws);
-		});
-		ws.exceptionHandler(err -> LOG.error("Failed: ",
-				err));
+					  {
+						  LOG.info("Closed {}", ws.textHandlerID());
+						  broadcast.unregister(ws);
+					  });
+		ws.exceptionHandler(err -> LOG.error("Failed: ", err));
 		ws.writeTextMessage("Connected!");
 		broadcast.register(ws);
 	}
@@ -51,9 +46,7 @@ public class WebSocketHandler implements Handler<ServerWebSocket>
 		return received ->
 		{
 			final String message = received.textData();
-			LOG.debug("Received message: {} from client {}",
-					message,
-					ws.textHandlerID());
+			LOG.debug("Received message: {} from client {}", message, ws.textHandlerID());
 			if ("disconnect me".equalsIgnoreCase(message))
 			{
 				LOG.info("Client close requested!");
@@ -68,7 +61,6 @@ public class WebSocketHandler implements Handler<ServerWebSocket>
 
 	private void closeClient(final ServerWebSocket ws)
 	{
-		ws.close((short) 1000,
-				"Normal Closure");
+		ws.close((short) 1000, "Normal Closure");
 	}
 }

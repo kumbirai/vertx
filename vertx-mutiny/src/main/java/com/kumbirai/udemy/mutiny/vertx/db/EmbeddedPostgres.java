@@ -8,6 +8,7 @@ public class EmbeddedPostgres
 	static final String DATABASE_NAME = "users";
 	static final String USERNAME = "postgres";
 	static final String PASSWORD = "secret";
+
 	private EmbeddedPostgres()
 	{
 	}

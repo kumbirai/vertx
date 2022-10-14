@@ -26,12 +26,11 @@ public class PointToPointMessageProducerExample
 			startPromise.complete();
 			messageProducer = vertx.eventBus()
 					.sender(Sender.class.getName());
-			vertx.setPeriodic(1000,
-					id ->
-					{
-						// Send a message every second
-						messageProducer.write("Sending a message...");
-					});
+			vertx.setPeriodic(1000, id ->
+			{
+				// Send a message every second
+				messageProducer.write("Sending a message...");
+			});
 		}
 
 		@Override
@@ -51,12 +50,10 @@ public class PointToPointMessageProducerExample
 		{
 			startPromise.complete();
 			vertx.eventBus()
-					.<String>consumer(Sender.class.getName(),
-							message ->
-							{
-								LOG.debug("Received: {}",
-										message.body());
-							});
+					.<String>consumer(Sender.class.getName(), message ->
+					{
+						LOG.debug("Received: {}", message.body());
+					});
 		}
 	}
 }

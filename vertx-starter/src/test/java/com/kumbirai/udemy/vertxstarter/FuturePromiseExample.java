@@ -23,13 +23,12 @@ class FuturePromiseExample
 	{
 		final Promise<String> promise = Promise.promise();
 		LOG.debug("Start");
-		vertx.setTimer(500,
-				id ->
-				{
-					promise.complete("Success");
-					LOG.debug("Success");
-					context.completeNow();
-				});
+		vertx.setTimer(500, id ->
+		{
+			promise.complete("Success");
+			LOG.debug("Success");
+			context.completeNow();
+		});
 		LOG.debug("End");
 	}
 
@@ -38,13 +37,12 @@ class FuturePromiseExample
 	{
 		final Promise<String> promise = Promise.promise();
 		LOG.debug("Start");
-		vertx.setTimer(500,
-				id ->
-				{
-					promise.fail(new RuntimeException("Failed!"));
-					LOG.debug("Failed");
-					context.completeNow();
-				});
+		vertx.setTimer(500, id ->
+		{
+			promise.fail(new RuntimeException("Failed!"));
+			LOG.debug("Failed");
+			context.completeNow();
+		});
 		LOG.debug("End");
 	}
 
@@ -53,19 +51,17 @@ class FuturePromiseExample
 	{
 		final Promise<String> promise = Promise.promise();
 		LOG.debug("Start");
-		vertx.setTimer(500,
-				id ->
-				{
-					promise.complete("Success");
-					LOG.debug("Timer done.");
-				});
+		vertx.setTimer(500, id ->
+		{
+			promise.complete("Success");
+			LOG.debug("Timer done.");
+		});
 		final Future<String> future = promise.future();
 		future.onSuccess(result ->
-				{
-					LOG.debug("Result: {}",
-							result);
-					context.completeNow();
-				})
+						 {
+							 LOG.debug("Result: {}", result);
+							 context.completeNow();
+						 })
 				.onFailure(context::failNow);
 	}
 
@@ -74,20 +70,18 @@ class FuturePromiseExample
 	{
 		final Promise<String> promise = Promise.promise();
 		LOG.debug("Start");
-		vertx.setTimer(500,
-				id ->
-				{
-					promise.fail(new RuntimeException("Failed!"));
-					LOG.debug("Timer done.");
-				});
+		vertx.setTimer(500, id ->
+		{
+			promise.fail(new RuntimeException("Failed!"));
+			LOG.debug("Timer done.");
+		});
 		final Future<String> future = promise.future();
 		future.onSuccess(context::failNow)
 				.onFailure(error ->
-				{
-					LOG.debug("Result: ",
-							error);
-					context.completeNow();
-				});
+						   {
+							   LOG.debug("Result: ", error);
+							   context.completeNow();
+						   });
 	}
 
 	@Test
@@ -95,28 +89,24 @@ class FuturePromiseExample
 	{
 		final Promise<String> promise = Promise.promise();
 		LOG.debug("Start");
-		vertx.setTimer(500,
-				id ->
-				{
-					promise.complete("Success");
-					LOG.debug("Timer done.");
-				});
+		vertx.setTimer(500, id ->
+		{
+			promise.complete("Success");
+			LOG.debug("Timer done.");
+		});
 		final Future<String> future = promise.future();
 		future.map(asString ->
-				{
-					LOG.debug("Map String to JsonObject");
-					return new JsonObject().put("key",
-							asString);
-				})
+				   {
+					   LOG.debug("Map String to JsonObject");
+					   return new JsonObject().put("key", asString);
+				   })
 				.map(jsonObject -> new JsonArray().add(jsonObject))
 				.onSuccess(result ->
-				{
-					LOG.debug("Result: {} of type {}",
-							result,
-							result.getClass()
-									.getSimpleName());
-					context.completeNow();
-				})
+						   {
+							   LOG.debug("Result: {} of type {}", result, result.getClass()
+									   .getSimpleName());
+							   context.completeNow();
+						   })
 				.onFailure(context::failNow);
 	}
 
@@ -124,26 +114,24 @@ class FuturePromiseExample
 	void future_coordination(Vertx vertx, VertxTestContext context)
 	{
 		vertx.createHttpServer()
-				.requestHandler(request -> LOG.debug("{}",
-						request))
+				.requestHandler(request -> LOG.debug("{}", request))
 				.listen(10_000)
 				.compose(server ->
-				{
-					LOG.debug("Another task");
-					return Future.succeededFuture(server);
-				})
+						 {
+							 LOG.debug("Another task");
+							 return Future.succeededFuture(server);
+						 })
 				.compose(server ->
-				{
-					LOG.debug("Even more");
-					return Future.succeededFuture(server);
-				})
+						 {
+							 LOG.debug("Even more");
+							 return Future.succeededFuture(server);
+						 })
 				.onFailure(context::failNow)
 				.onSuccess(server ->
-				{
-					LOG.debug("Server started on port {}",
-							server.actualPort());
-					context.completeNow();
-				});
+						   {
+							   LOG.debug("Server started on port {}", server.actualPort());
+							   context.completeNow();
+						   });
 	}
 
 	@Test
@@ -157,23 +145,20 @@ class FuturePromiseExample
 		var futureTwo = two.future();
 		var futureThree = three.future();
 
-		CompositeFuture.all(futureOne,
-						futureTwo,
-						futureThree)
+		CompositeFuture.all(futureOne, futureTwo, futureThree)
 				.onFailure(context::failNow)
 				.onSuccess(result ->
-				{
-					LOG.debug("Success");
-					context.completeNow();
-				});
+						   {
+							   LOG.debug("Success");
+							   context.completeNow();
+						   });
 
 		// Complete futures
-		vertx.setTimer(500,
-				id ->
-				{
-					one.complete();
-					two.complete();
-					three.complete();
-				});
+		vertx.setTimer(500, id ->
+		{
+			one.complete();
+			two.complete();
+			three.complete();
+		});
 	}
 }

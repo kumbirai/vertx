@@ -23,49 +23,38 @@ public class FlywayMigration
 
 	public static Future<Void> migrate(final Vertx vertx, final DbConfig dbConfig)
 	{
-		LOG.debug("DB Config: {}",
-				dbConfig);
+		LOG.debug("DB Config: {}", dbConfig);
 		return vertx.<Void>executeBlocking(promise ->
-				{
-					// Flyway migration is blocking => uses JDBC
-					execute(dbConfig);
-					promise.complete();
-				})
-				.onFailure(err -> LOG.error("Failed to migrate db schema with error: ",
-						err));
+										   {
+											   // Flyway migration is blocking => uses JDBC
+											   execute(dbConfig);
+											   promise.complete();
+										   })
+				.onFailure(err -> LOG.error("Failed to migrate db schema with error: ", err));
 	}
 
 	private static void execute(final DbConfig dbConfig)
 	{
 		var database = "postgresql";
 		//var database = "mysql"
-		final String jdbcUrl = String.format("jdbc:%s://%s:%d/%s",
-				database,
-				dbConfig.getHost(),
-				dbConfig.getPort(),
-				dbConfig.getDatabase());
-		LOG.debug("Migrating DB schema using jdbc url: {}",
-				jdbcUrl);
+		final String jdbcUrl = String.format("jdbc:%s://%s:%d/%s", database, dbConfig.getHost(), dbConfig.getPort(), dbConfig.getDatabase());
+		LOG.debug("Migrating DB schema using jdbc url: {}", jdbcUrl);
 
 		final Flyway flyway = Flyway.configure()
-				.dataSource(jdbcUrl,
-						dbConfig.getUser(),
-						dbConfig.getPassword())
+				.dataSource(jdbcUrl, dbConfig.getUser(), dbConfig.getPassword())
 				.schemas("broker")
 				.defaultSchema("broker")
 				.load();
 
 		var current = Optional.ofNullable(flyway.info()
-				.current());
-		current.ifPresent(info -> LOG.info("db schema is at version: {}",
-				info.getVersion()));
+												  .current());
+		current.ifPresent(info -> LOG.info("db schema is at version: {}", info.getVersion()));
 
 		var pendingMigrations = flyway.info()
 				.pending();
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("Pending migrations are: {}",
-					printMigrations(pendingMigrations));
+			LOG.debug("Pending migrations are: {}", printMigrations(pendingMigrations));
 		}
 
 		flyway.migrate();
@@ -79,8 +68,6 @@ public class FlywayMigration
 		}
 		return Arrays.stream(pending)
 				.map(each -> each.getVersion() + " - " + each.getDescription())
-				.collect(Collectors.joining(",",
-						"[",
-						"]"));
+				.collect(Collectors.joining(",", "[", "]"));
 	}
 }

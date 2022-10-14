@@ -35,16 +35,14 @@ public class UserResource
 	@Path("/{id}")
 	public Uni<Users> getById(Long id)
 	{
-		LOG.info("Get by id: {}",
-				id);
+		LOG.info("Get by id: {}", id);
 		return Users.findById(id);
 	}
 
 	@POST
 	public Uni<Response> create(Users user)
 	{
-		LOG.info("Create: {}",
-				user);
+		LOG.info("Create: {}", user);
 		return Panache.<Users>withTransaction(user::persist)
 				.onItem()
 				.transform(insertedUser -> Response.created(URI.create("/users/" + insertedUser.id))

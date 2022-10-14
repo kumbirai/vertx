@@ -29,29 +29,21 @@ public class RequestResponseExample
 			startPromise.complete();
 			var eventBus = vertx.eventBus();
 			final String message = "Hello World!";
-			LOG.debug("Sending: {}",
-					message);
-			eventBus.<String>request(ADDRESS,
-					message,
-					reply ->
-					{
-						LOG.debug("Response: {}",
-								reply.result()
-										.body());
-					});
+			LOG.debug("Sending: {}", message);
+			eventBus.<String>request(ADDRESS, message, reply ->
+			{
+				LOG.debug("Response: {}", reply.result()
+						.body());
+			});
 			Faker faker = new Faker();
 			vertx.setPeriodic(Duration.ofSeconds(4)
-							.toMillis(),
-					id -> vertx.eventBus()
-							.<String>request(ADDRESS,
-									faker.chuckNorris()
-											.fact(),
-									reply ->
-									{
-										LOG.debug("Response: {}",
-												reply.result()
-														.body());
-									}));
+									  .toMillis(), id -> vertx.eventBus()
+					.<String>request(ADDRESS, faker.chuckNorris()
+							.fact(), reply ->
+									 {
+										 LOG.debug("Response: {}", reply.result()
+												 .body());
+									 }));
 		}
 	}
 
@@ -64,13 +56,11 @@ public class RequestResponseExample
 		{
 			startPromise.complete();
 			vertx.eventBus()
-					.<String>consumer(RequestVerticle.ADDRESS,
-							message ->
-							{
-								LOG.debug("Received Message: {}",
-										message.body());
-								message.reply("Received your message. Thanks!");
-							});
+					.<String>consumer(RequestVerticle.ADDRESS, message ->
+					{
+						LOG.debug("Received Message: {}", message.body());
+						message.reply("Received your message. Thanks!");
+					});
 		}
 	}
 }

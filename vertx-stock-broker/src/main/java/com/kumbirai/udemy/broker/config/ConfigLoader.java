@@ -23,13 +23,9 @@ public class ConfigLoader
 	public static final String DB_DATABASE = "DB_DATABASE";
 	public static final String DB_USER = "DB_USER";
 	public static final String DB_PASSWORD = "DB_PASSWORD";
-	static final List<String> EXPOSED_ENVIRONMENT_VARIABLES = Arrays.asList(SERVER_PORT,
-			DB_HOST,
-			DB_PORT,
-			DB_DATABASE,
-			DB_USER,
-			DB_PASSWORD);
+	static final List<String> EXPOSED_ENVIRONMENT_VARIABLES = Arrays.asList(SERVER_PORT, DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASSWORD);
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);
+
 	private ConfigLoader()
 	{
 		throw new IllegalStateException("Utility Class");
@@ -41,29 +37,24 @@ public class ConfigLoader
 		EXPOSED_ENVIRONMENT_VARIABLES.forEach(exposedKeys::add);
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("Fetch configuration for {}",
-					exposedKeys.encode());
+			LOG.debug("Fetch configuration for {}", exposedKeys.encode());
 		}
 
 		var envStore = new ConfigStoreOptions().setType("env")
-				.setConfig(new JsonObject().put("keys",
-						exposedKeys));
+				.setConfig(new JsonObject().put("keys", exposedKeys));
 
 		var propertyStore = new ConfigStoreOptions().setType("sys")
-				.setConfig(new JsonObject().put("cache",
-						false));
+				.setConfig(new JsonObject().put("cache", false));
 
 		var yamlStore = new ConfigStoreOptions().setType("file")
 				.setFormat("yaml")
-				.setConfig(new JsonObject().put("path",
-						CONFIG_FILE));
+				.setConfig(new JsonObject().put("path", CONFIG_FILE));
 
-		var retriever = ConfigRetriever.create(vertx,
-				new ConfigRetrieverOptions()
-						// Order defines overload rules
-						.addStore(yamlStore)
-						.addStore(propertyStore)
-						.addStore(envStore));
+		var retriever = ConfigRetriever.create(vertx, new ConfigRetrieverOptions()
+				// Order defines overload rules
+				.addStore(yamlStore)
+				.addStore(propertyStore)
+				.addStore(envStore));
 
 		return retriever.getConfig()
 				.map(BrokerConfig::from);

@@ -26,20 +26,15 @@ public class DeleteWatchListDatabaseHandler implements Handler<RoutingContext>
 	{
 		var accountId = WatchListRestApi.getAccountId(context);
 
-		SqlTemplate.forUpdate(db,
-						"DELETE FROM broker.watchlist where account_id=#{account_id}")
-				.execute(Collections.singletonMap("account_id",
-						accountId))
-				.onFailure(DbResponse.errorHandler(context,
-						"Failed to delete watchlist for accountId: " + accountId))
+		SqlTemplate.forUpdate(db, "DELETE FROM broker.watchlist where account_id=#{account_id}")
+				.execute(Collections.singletonMap("account_id", accountId))
+				.onFailure(DbResponse.errorHandler(context, "Failed to delete watchlist for accountId: " + accountId))
 				.onSuccess(result ->
-				{
-					LOG.debug("Deleted {} rows for accountId {}",
-							result.rowCount(),
-							accountId);
-					context.response()
-							.setStatusCode(HttpResponseStatus.NO_CONTENT.code())
-							.end();
-				});
+						   {
+							   LOG.debug("Deleted {} rows for accountId {}", result.rowCount(), accountId);
+							   context.response()
+									   .setStatusCode(HttpResponseStatus.NO_CONTENT.code())
+									   .end();
+						   });
 	}
 }

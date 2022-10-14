@@ -15,20 +15,13 @@ public abstract class AbstractRestApiTest
 	@BeforeEach
 	void deploy_verticle(Vertx vertx, VertxTestContext context)
 	{
-		System.setProperty(ConfigLoader.SERVER_PORT,
-				String.valueOf(TEST_SERVER_PORT));
-		System.setProperty(ConfigLoader.DB_HOST,
-				"localhost");
-		System.setProperty(ConfigLoader.DB_PORT,
-				"5432");
-		System.setProperty(ConfigLoader.DB_DATABASE,
-				"sandbox");
-		System.setProperty(ConfigLoader.DB_USER,
-				"postgres");
-		System.setProperty(ConfigLoader.DB_PASSWORD,
-				"secret");
+		System.setProperty(ConfigLoader.SERVER_PORT, String.valueOf(TEST_SERVER_PORT));
+		System.setProperty(ConfigLoader.DB_HOST, "localhost");
+		System.setProperty(ConfigLoader.DB_PORT, "5432");
+		System.setProperty(ConfigLoader.DB_DATABASE, "sandbox");
+		System.setProperty(ConfigLoader.DB_USER, "postgres");
+		System.setProperty(ConfigLoader.DB_PASSWORD, "secret");
 		LOG.warn("!!! Tests are using local database !!!");
-		vertx.deployVerticle(new MainVerticle(),
-				context.succeeding(id -> context.completeNow()));
+		vertx.deployVerticle(new MainVerticle(), context.succeeding(id -> context.completeNow()));
 	}
 }

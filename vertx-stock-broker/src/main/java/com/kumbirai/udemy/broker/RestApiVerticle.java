@@ -27,19 +27,16 @@ public class RestApiVerticle extends AbstractVerticle
 		ConfigLoader.load(vertx)
 				.onFailure(startPromise::fail)
 				.onSuccess(configuration ->
-				{
-					LOG.info("Retrieved Configuration: {}",
-							configuration);
-					startHttpServerAndAttachRoutes(startPromise,
-							configuration);
-				});
+						   {
+							   LOG.info("Retrieved Configuration: {}", configuration);
+							   startHttpServerAndAttachRoutes(startPromise, configuration);
+						   });
 	}
 
 	private void startHttpServerAndAttachRoutes(final Promise<Void> startPromise, final BrokerConfig configuration)
 	{
 		// One pool for each Rest Api Verticle
-		final Pool db = DBPools.createPgPool(configuration,
-				vertx);
+		final Pool db = DBPools.createPgPool(configuration, vertx);
 		// Alternatively use MySQL
 		// final Pool db = DBPools.createMySQLPool(configuration, vertx)
 
@@ -47,31 +44,25 @@ public class RestApiVerticle extends AbstractVerticle
 		restApi.route()
 				.handler(BodyHandler.create())
 				.failureHandler(handleFailure());
-		AssetsRestApi.attach(restApi,
-				db);
-		QuotesRestApi.attach(restApi,
-				db);
-		WatchListRestApi.attach(restApi,
-				db);
+		AssetsRestApi.attach(restApi, db);
+		QuotesRestApi.attach(restApi, db);
+		WatchListRestApi.attach(restApi, db);
 
 		vertx.createHttpServer()
 				.requestHandler(restApi)
-				.exceptionHandler(error -> LOG.error("HTTP Server error: ",
-						error))
-				.listen(configuration.getServerPort(),
-						http ->
-						{
-							if (http.succeeded())
-							{
-								startPromise.complete();
-								LOG.info("HTTP server started on port {}",
-										configuration.getServerPort());
-							}
-							else
-							{
-								startPromise.fail(http.cause());
-							}
-						});
+				.exceptionHandler(error -> LOG.error("HTTP Server error: ", error))
+				.listen(configuration.getServerPort(), http ->
+				{
+					if (http.succeeded())
+					{
+						startPromise.complete();
+						LOG.info("HTTP server started on port {}", configuration.getServerPort());
+					}
+					else
+					{
+						startPromise.fail(http.cause());
+					}
+				});
 	}
 
 	private Handler<RoutingContext> handleFailure()
@@ -84,13 +75,11 @@ public class RestApiVerticle extends AbstractVerticle
 				// Ignore completed response
 				return;
 			}
-			LOG.error("Route Error:",
-					errorContext.failure());
+			LOG.error("Route Error:", errorContext.failure());
 			errorContext.response()
 					.setStatusCode(500)
-					.end(new JsonObject().put("message",
-									"Something went wrong :(")
-							.toBuffer());
+					.end(new JsonObject().put("message", "Something went wrong :(")
+								 .toBuffer());
 		};
 	}
 }

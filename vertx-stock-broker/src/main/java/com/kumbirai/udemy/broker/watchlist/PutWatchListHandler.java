@@ -22,8 +22,7 @@ public class PutWatchListHandler implements Handler<RoutingContext>
 
 		var json = context.getBodyAsJson();
 		var watchList = json.mapTo(WatchList.class);
-		watchListPerAccount.put(UUID.fromString(accountId),
-				watchList);
+		watchListPerAccount.put(UUID.fromString(accountId), watchList);
 		context.response()
 				.end(json.toBuffer());
 	}

@@ -26,19 +26,16 @@ public class HelloVertxResource
 	@Inject
 	public HelloVertxResource(Vertx vertx)
 	{
-		this.client = WebClient.create(vertx,
-				new WebClientOptions().setDefaultHost("localhost")
-						.setDefaultPort(8080));
+		this.client = WebClient.create(vertx, new WebClientOptions().setDefaultHost("localhost")
+				.setDefaultPort(8080));
 	}
 
 	@GET
 	public Uni<JsonArray> get()
 	{
 		final var item = new JsonArray();
-		item.add(new JsonObject().put("id",
-				1));
-		item.add(new JsonObject().put("id",
-				2));
+		item.add(new JsonObject().put("id", 1));
+		item.add(new JsonObject().put("id", 2));
 		return Uni.createFrom()
 				.item(item);
 	}

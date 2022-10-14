@@ -24,14 +24,12 @@ public class GetQuoteHandler implements Handler<RoutingContext>
 	public void handle(final RoutingContext context)
 	{
 		final String assetParam = context.pathParam("asset");
-		LOG.debug("Asset parameter: {}",
-				assetParam);
+		LOG.debug("Asset parameter: {}", assetParam);
 
 		var maybeQuote = Optional.ofNullable(cachedQuotes.get(assetParam));
 		if (maybeQuote.isEmpty())
 		{
-			DbResponse.notFound(context,
-					"quote for asset '" + assetParam + "' not available!");
+			DbResponse.notFound(context, "quote for asset '" + assetParam + "' not available!");
 			return;
 		}
 
@@ -39,9 +37,7 @@ public class GetQuoteHandler implements Handler<RoutingContext>
 				.toJsonObject();
 		if (LOG.isInfoEnabled())
 		{
-			LOG.info("Path {} responds with {}",
-					context.normalizedPath(),
-					response.encode());
+			LOG.info("Path {} responds with {}", context.normalizedPath(), response.encode());
 		}
 		context.response()
 				.end(response.toBuffer());

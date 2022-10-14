@@ -8,13 +8,7 @@ import java.util.List;
 
 public class AssetsRestApi
 {
-	public static final List<String> ASSETS = Arrays.asList("AAPL",
-			"AMZN",
-			"FB",
-			"GOOG",
-			"MSFT",
-			"NFLX",
-			"TSLA");
+	public static final List<String> ASSETS = Arrays.asList("AAPL", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "TSLA");
 
 	private AssetsRestApi()
 	{

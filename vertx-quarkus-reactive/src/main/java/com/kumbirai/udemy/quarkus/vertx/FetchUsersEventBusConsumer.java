@@ -19,12 +19,10 @@ public class FetchUsersEventBusConsumer extends AbstractVerticle
 	public Uni<Void> asyncStart()
 	{
 		vertx.eventBus()
-				.<JsonArray>consumer(ADDRESS,
-						message ->
-						{
-							LOG.info("Consumed from Event Bus: {}",
-									message.body());
-						});
+				.<JsonArray>consumer(ADDRESS, message ->
+				{
+					LOG.info("Consumed from Event Bus: {}", message.body());
+				});
 		return Uni.createFrom()
 				.voidItem();
 	}

@@ -20,22 +20,19 @@ public class WorkerExample extends AbstractVerticle
 	@Override
 	public void start(final Promise<Void> startPromise) throws Exception
 	{
-		vertx.deployVerticle(new WorkerVerticle(),
-				new DeploymentOptions().setWorker(true)
-						.setWorkerPoolSize(1)
-						.setWorkerPoolName("my-worker-verticle"),
-				result ->
-				{
-					if (result.succeeded())
-					{
-						LOG.debug("::WorkerVerticle:: Blocking call done.");
-					}
-					else
-					{
-						LOG.error("::WorkerVerticle:: Blocking call failed due to:",
-								result.cause());
-					}
-				});
+		vertx.deployVerticle(new WorkerVerticle(), new DeploymentOptions().setWorker(true)
+				.setWorkerPoolSize(1)
+				.setWorkerPoolName("my-worker-verticle"), result ->
+							 {
+								 if (result.succeeded())
+								 {
+									 LOG.debug("::WorkerVerticle:: Blocking call done.");
+								 }
+								 else
+								 {
+									 LOG.error("::WorkerVerticle:: Blocking call failed due to:", result.cause());
+								 }
+							 });
 		startPromise.complete();
 		executeBlockingCode();
 	}
@@ -43,31 +40,28 @@ public class WorkerExample extends AbstractVerticle
 	private void executeBlockingCode()
 	{
 		vertx.executeBlocking(event ->
-				{
-					LOG.debug("Executing blocking code");
-					try
-					{
-						Thread.sleep(4000);
-						event.complete();
-					}
-					catch (InterruptedException e)
-					{
-						LOG.error("Failed: ",
-								e);
-						event.fail(e);
-					}
-				},
-				result ->
-				{
-					if (result.succeeded())
-					{
-						LOG.debug("::executeBlocking:: Blocking call done.");
-					}
-					else
-					{
-						LOG.error("::executeBlocking:: Blocking call failed due to:",
-								result.cause());
-					}
-				});
+							  {
+								  LOG.debug("Executing blocking code");
+								  try
+								  {
+									  Thread.sleep(4000);
+									  event.complete();
+								  }
+								  catch (InterruptedException e)
+								  {
+									  LOG.error("Failed: ", e);
+									  event.fail(e);
+								  }
+							  }, result ->
+							  {
+								  if (result.succeeded())
+								  {
+									  LOG.debug("::executeBlocking:: Blocking call done.");
+								  }
+								  else
+								  {
+									  LOG.error("::executeBlocking:: Blocking call failed due to:", result.cause());
+								  }
+							  });
 	}
 }

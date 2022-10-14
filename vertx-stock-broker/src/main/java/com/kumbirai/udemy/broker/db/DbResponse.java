@@ -22,17 +22,13 @@ public class DbResponse
 	{
 		return error ->
 		{
-			LOG.error("Failure: ",
-					error);
+			LOG.error("Failure: ", error);
 			context.response()
 					.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())
-					.putHeader(HttpHeaders.CONTENT_TYPE,
-							HttpHeaderValues.APPLICATION_JSON)
-					.end(new JsonObject().put("message",
-									message)
-							.put("path",
-									context.normalizedPath())
-							.toBuffer());
+					.putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON)
+					.end(new JsonObject().put("message", message)
+								 .put("path", context.normalizedPath())
+								 .toBuffer());
 		};
 	}
 
@@ -40,10 +36,8 @@ public class DbResponse
 	{
 		context.response()
 				.setStatusCode(HttpResponseStatus.NOT_FOUND.code())
-				.end(new JsonObject().put("message",
-								message)
-						.put("path",
-								context.normalizedPath())
-						.toBuffer());
+				.end(new JsonObject().put("message", message)
+							 .put("path", context.normalizedPath())
+							 .toBuffer());
 	}
 }

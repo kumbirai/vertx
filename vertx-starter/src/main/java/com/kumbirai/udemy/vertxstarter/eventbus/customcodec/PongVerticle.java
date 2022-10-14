@@ -17,24 +17,20 @@ public class PongVerticle extends AbstractVerticle
 	{
 		// Register only once
 		vertx.eventBus()
-				.registerDefaultCodec(Pong.class,
-						new LocalMessageCodec<>(Pong.class));
+				.registerDefaultCodec(Pong.class, new LocalMessageCodec<>(Pong.class));
 		vertx.eventBus()
-				.<Ping>consumer(PingVerticle.ADDRESS,
-						message ->
-						{
-							LOG.debug("Received Message: {}",
-									message.body());
-							message.reply(Pong.builder()
-									.id(id.incrementAndGet())
-									.payload(message.body())
-									.build());
-						})
-				.exceptionHandler(error ->
+				.<Ping>consumer(PingVerticle.ADDRESS, message ->
 				{
-					LOG.error("Error: ",
-							error);
-				});
+					LOG.debug("Received Message: {}", message.body());
+					message.reply(Pong.builder()
+										  .id(id.incrementAndGet())
+										  .payload(message.body())
+										  .build());
+				})
+				.exceptionHandler(error ->
+								  {
+									  LOG.error("Error: ", error);
+								  });
 		startPromise.complete();
 	}
 }

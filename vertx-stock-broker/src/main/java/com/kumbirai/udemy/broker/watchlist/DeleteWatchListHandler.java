@@ -23,11 +23,9 @@ public class DeleteWatchListHandler implements Handler<RoutingContext>
 	{
 		String accountId = WatchListRestApi.getAccountId(context);
 		final WatchList deleted = watchListPerAccount.remove(UUID.fromString(accountId));
-		LOG.info("Deleted: {}, Remaining: {}",
-				deleted,
-				watchListPerAccount.values());
+		LOG.info("Deleted: {}, Remaining: {}", deleted, watchListPerAccount.values());
 		context.response()
 				.end(deleted.toJsonObject()
-						.toBuffer());
+							 .toBuffer());
 	}
 }

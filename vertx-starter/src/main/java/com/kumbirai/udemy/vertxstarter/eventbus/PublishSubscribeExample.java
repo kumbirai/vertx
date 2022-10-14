@@ -17,8 +17,7 @@ public class PublishSubscribeExample
 		var vertx = Vertx.vertx();
 		vertx.deployVerticle(new Publish());
 		vertx.deployVerticle(new Subscriber1());
-		vertx.deployVerticle(Subscriber2.class.getName(),
-				new DeploymentOptions().setInstances(2));
+		vertx.deployVerticle(Subscriber2.class.getName(), new DeploymentOptions().setInstances(2));
 	}
 
 	public static class Publish extends AbstractVerticle
@@ -29,11 +28,9 @@ public class PublishSubscribeExample
 			startPromise.complete();
 			Faker faker = new Faker();
 			vertx.setPeriodic(Duration.ofSeconds(4)
-							.toMillis(),
-					id -> vertx.eventBus()
-							.publish(Publish.class.getName(),
-									faker.backToTheFuture()
-											.quote()));
+									  .toMillis(), id -> vertx.eventBus()
+					.publish(Publish.class.getName(), faker.backToTheFuture()
+							.quote()));
 		}
 	}
 
@@ -45,12 +42,10 @@ public class PublishSubscribeExample
 		public void start(final Promise<Void> startPromise) throws Exception
 		{
 			vertx.eventBus()
-					.<String>consumer(Publish.class.getName(),
-							message ->
-							{
-								LOG.debug("Received: {}",
-										message.body());
-							});
+					.<String>consumer(Publish.class.getName(), message ->
+					{
+						LOG.debug("Received: {}", message.body());
+					});
 			startPromise.complete();
 		}
 	}
@@ -63,12 +58,10 @@ public class PublishSubscribeExample
 		public void start(final Promise<Void> startPromise) throws Exception
 		{
 			vertx.eventBus()
-					.<String>consumer(Publish.class.getName(),
-							message ->
-							{
-								LOG.debug("Received: {}",
-										message.body());
-							});
+					.<String>consumer(Publish.class.getName(), message ->
+					{
+						LOG.debug("Received: {}", message.body());
+					});
 			startPromise.complete();
 		}
 	}

@@ -12,16 +12,14 @@ public class VerticleAA extends AbstractVerticle
 	@Override
 	public void start(final Promise<Void> startPromise) throws Exception
 	{
-		LOG.debug("Start {}",
-				getClass().getName());
+		LOG.debug("Start {}", getClass().getName());
 		startPromise.complete();
 	}
 
 	@Override
 	public void stop(final Promise<Void> stopPromise) throws Exception
 	{
-		LOG.debug("Stop {}",
-				getClass().getName());
+		LOG.debug("Stop {}", getClass().getName());
 		stopPromise.complete();
 	}
 }

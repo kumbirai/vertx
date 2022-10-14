@@ -25,17 +25,14 @@ class TestQuotesRestApi extends AbstractRestApiTest
 		client.get("/quotes/AMZN")
 				.send()
 				.onComplete(context.succeeding(response ->
-				{
-					var json = response.bodyAsJsonObject();
-					LOG.info("Response: {}",
-							json);
-					assertEquals("{\"name\":\"AMZN\"}",
-							json.getJsonObject("asset")
-									.encode());
-					assertEquals(200,
-							response.statusCode());
-					context.completeNow();
-				}));
+											   {
+												   var json = response.bodyAsJsonObject();
+												   LOG.info("Response: {}", json);
+												   assertEquals("{\"name\":\"AMZN\"}", json.getJsonObject("asset")
+														   .encode());
+												   assertEquals(200, response.statusCode());
+												   context.completeNow();
+											   }));
 	}
 
 	@Test
@@ -45,21 +42,17 @@ class TestQuotesRestApi extends AbstractRestApiTest
 		client.get("/quotes/UNKNOWN")
 				.send()
 				.onComplete(context.succeeding(response ->
-				{
-					var json = response.bodyAsJsonObject();
-					LOG.info("Response: {}",
-							json);
-					assertEquals(404,
-							response.statusCode());
-					assertEquals("{\"message\":\"quote for asset UNKNOWN not available!\",\"path\":\"/quotes/UNKNOWN\"}",
-							json.encode());
-					context.completeNow();
-				}));
+											   {
+												   var json = response.bodyAsJsonObject();
+												   LOG.info("Response: {}", json);
+												   assertEquals(404, response.statusCode());
+												   assertEquals("{\"message\":\"quote for asset UNKNOWN not available!\",\"path\":\"/quotes/UNKNOWN\"}", json.encode());
+												   context.completeNow();
+											   }));
 	}
 
 	private WebClient webClient(final Vertx vertx)
 	{
-		return WebClient.create(vertx,
-				new WebClientOptions().setDefaultPort(TEST_SERVER_PORT));
+		return WebClient.create(vertx, new WebClientOptions().setDefaultPort(TEST_SERVER_PORT));
 	}
 }

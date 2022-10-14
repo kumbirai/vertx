@@ -20,8 +20,7 @@ public class QuotesRestApi
 	public static void attach(Router parent, final Pool db)
 	{
 		final Map<String, Quote> cachedQuotes = new HashMap<>();
-		AssetsRestApi.ASSETS.forEach(symbol -> cachedQuotes.put(symbol,
-				initRandomQuote(symbol)));
+		AssetsRestApi.ASSETS.forEach(symbol -> cachedQuotes.put(symbol, initRandomQuote(symbol)));
 		parent.get("/quotes/:asset")
 				.handler(new GetQuoteHandler(cachedQuotes));
 		parent.get("/pg/quotes/:asset")
@@ -42,7 +41,6 @@ public class QuotesRestApi
 	private static BigDecimal randomValue()
 	{
 		return BigDecimal.valueOf(ThreadLocalRandom.current()
-				.nextDouble(1,
-						100));
+										  .nextDouble(1, 100));
 	}
 }

@@ -29,34 +29,26 @@ public class PriceBroadcast
 	{
 		var faker = new Faker();
 		vertx.setPeriodic(Duration.ofSeconds(1)
-						.toMillis(),
-				id ->
-				{
-					LOG.debug("Push update to {} client(s)!",
-							connectedClients.size());
-					final String priceUpdate = new JsonObject().put("date",
-									LocalDateTime.now()
-											.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-							.put("symbol",
-									"AMZN")
-							.put("value",
-									new Random().nextInt(1000))
-							.put("valid",
-									faker.bool()
-											.bool())
-							.put("Chuck Norris",
-									faker.chuckNorris()
-											.fact())
-							.encodePrettily();
-					connectedClients.values()
-							.forEach(ws -> ws.writeTextMessage(priceUpdate));
-				});
+								  .toMillis(), id ->
+						  {
+							  LOG.debug("Push update to {} client(s)!", connectedClients.size());
+							  final String priceUpdate = new JsonObject().put("date", LocalDateTime.now()
+											  .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+									  .put("symbol", "AMZN")
+									  .put("value", new Random().nextInt(1000))
+									  .put("valid", faker.bool()
+											  .bool())
+									  .put("Chuck Norris", faker.chuckNorris()
+											  .fact())
+									  .encodePrettily();
+							  connectedClients.values()
+									  .forEach(ws -> ws.writeTextMessage(priceUpdate));
+						  });
 	}
 
 	public void register(final ServerWebSocket ws)
 	{
-		connectedClients.put(ws.textHandlerID(),
-				ws);
+		connectedClients.put(ws.textHandlerID(), ws);
 	}
 
 	public void unregister(final ServerWebSocket ws)

@@ -22,14 +22,12 @@ public class PointToPointExample
 		public void start(final Promise<Void> startPromise) throws Exception
 		{
 			Faker faker = new Faker();
-			vertx.setPeriodic(2000,
-					id ->
-					{
-						vertx.eventBus()
-								.send(Sender.class.getName(),
-										faker.elderScrolls()
-												.quote());
-					});
+			vertx.setPeriodic(2000, id ->
+			{
+				vertx.eventBus()
+						.send(Sender.class.getName(), faker.elderScrolls()
+								.quote());
+			});
 			startPromise.complete();
 		}
 	}
@@ -42,12 +40,10 @@ public class PointToPointExample
 		public void start(final Promise<Void> startPromise) throws Exception
 		{
 			vertx.eventBus()
-					.<String>consumer(Sender.class.getName(),
-							message ->
-							{
-								LOG.debug("Received: {}",
-										message.body());
-							});
+					.<String>consumer(Sender.class.getName(), message ->
+					{
+						LOG.debug("Received: {}", message.body());
+					});
 			startPromise.complete();
 		}
 	}

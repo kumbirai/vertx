@@ -29,31 +29,24 @@ public class GetWatchListFromDatabaseHandler implements Handler<RoutingContext>
 	{
 		var accountId = WatchListRestApi.getAccountId(context);
 
-		SqlTemplate.forQuery(db,
-						"SELECT w.asset FROM broker.watchlist w where w.account_id=#{account_id}")
+		SqlTemplate.forQuery(db, "SELECT w.asset FROM broker.watchlist w where w.account_id=#{account_id}")
 				.mapTo(Row::toJson)
-				.execute(Collections.singletonMap("account_id",
-						accountId))
-				.onFailure(DbResponse.errorHandler(context,
-						"Failed to fetch watchlist for accountId: " + accountId))
+				.execute(Collections.singletonMap("account_id", accountId))
+				.onFailure(DbResponse.errorHandler(context, "Failed to fetch watchlist for accountId: " + accountId))
 				.onSuccess(assets ->
-				{
-					if (!assets.iterator()
-							.hasNext())
-					{
-						DbResponse.notFound(context,
-								"watchlist for accountId '" + accountId + "' is not available!");
-						return;
-					}
-					var response = new JsonArray();
-					assets.forEach(response::add);
-					LOG.info("Path {} responds with {}",
-							context.normalizedPath(),
-							response.encode());
-					context.response()
-							.putHeader(HttpHeaders.CONTENT_TYPE,
-									HttpHeaderValues.APPLICATION_JSON)
-							.end(response.toBuffer());
-				});
+						   {
+							   if (!assets.iterator()
+									   .hasNext())
+							   {
+								   DbResponse.notFound(context, "watchlist for accountId '" + accountId + "' is not available!");
+								   return;
+							   }
+							   var response = new JsonArray();
+							   assets.forEach(response::add);
+							   LOG.info("Path {} responds with {}", context.normalizedPath(), response.encode());
+							   context.response()
+									   .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON)
+									   .end(response.toBuffer());
+						   });
 	}
 }

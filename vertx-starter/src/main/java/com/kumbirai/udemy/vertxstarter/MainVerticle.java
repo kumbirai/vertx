@@ -29,47 +29,38 @@ public class MainVerticle extends AbstractVerticle
 
 		vertx.createHttpServer()
 				.requestHandler(req ->
-				{
-					req.response()
-							.putHeader("content-type",
-									"text/plain")
-							.end("Hello from Vert.x!")
-							.onSuccess(id ->
-							{
-								LOG.debug("Server Responded...");
-							});
+								{
+									req.response()
+											.putHeader("content-type", "text/plain")
+											.end("Hello from Vert.x!")
+											.onSuccess(id ->
+													   {
+														   LOG.debug("Server Responded...");
+													   });
 
-				})
-				.listen(8888,
-						http ->
-						{
-							if (http.succeeded())
-							{
-								startPromise.complete();
-								LOG.debug("HTTP server started on port 8888");
-							}
-							else
-							{
-								startPromise.fail(http.cause());
-							}
-						});
+								})
+				.listen(8888, http ->
+				{
+					if (http.succeeded())
+					{
+						startPromise.complete();
+						LOG.debug("HTTP server started on port 8888");
+					}
+					else
+					{
+						startPromise.fail(http.cause());
+					}
+				});
 	}
 
 	private void deployVerticles()
 	{
-		vertx.deployVerticle(new PingPong(),
-				logOnError());
-		vertx.deployVerticle(new PointToPointExample.Sender(),
-				logOnError());
-		vertx.deployVerticle(new PointToPointExample.Receiver(),
-				logOnError());
-		vertx.deployVerticle(new PublishSubscribeExample.Publish(),
-				logOnError());
-		vertx.deployVerticle(new PublishSubscribeExample.Subscriber1(),
-				logOnError());
-		vertx.deployVerticle(PublishSubscribeExample.Subscriber2.class.getName(),
-				new DeploymentOptions().setInstances(2),
-				logOnError());
+		vertx.deployVerticle(new PingPong(), logOnError());
+		vertx.deployVerticle(new PointToPointExample.Sender(), logOnError());
+		vertx.deployVerticle(new PointToPointExample.Receiver(), logOnError());
+		vertx.deployVerticle(new PublishSubscribeExample.Publish(), logOnError());
+		vertx.deployVerticle(new PublishSubscribeExample.Subscriber1(), logOnError());
+		vertx.deployVerticle(PublishSubscribeExample.Subscriber2.class.getName(), new DeploymentOptions().setInstances(2), logOnError());
 	}
 
 	private Handler<AsyncResult<String>> logOnError()
@@ -78,8 +69,7 @@ public class MainVerticle extends AbstractVerticle
 		{
 			if (ar.failed())
 			{
-				LOG.error("err",
-						ar.cause());
+				LOG.error("err", ar.cause());
 			}
 		};
 	}

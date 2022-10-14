@@ -23,16 +23,12 @@ public class GetAssetsHandler implements Handler<RoutingContext>
 				.forEach(response::add);
 		if (LOG.isInfoEnabled())
 		{
-			LOG.info("Path {} responds with {}",
-					context.normalizedPath(),
-					response.encode());
+			LOG.info("Path {} responds with {}", context.normalizedPath(), response.encode());
 		}
 		// artificialSleep(context)
 		context.response()
-				.putHeader(HttpHeaders.CONTENT_TYPE,
-						HttpHeaderValues.APPLICATION_JSON)
-				.putHeader("my-header",
-						"my-value")
+				.putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON)
+				.putHeader("my-header", "my-value")
 				.end(response.toBuffer());
 	}
 
@@ -46,8 +42,7 @@ public class GetAssetsHandler implements Handler<RoutingContext>
 		try
 		{
 			final int random = ThreadLocalRandom.current()
-					.nextInt(100,
-							300);
+					.nextInt(100, 300);
 			if (random % 2 == 0)
 			{
 				Thread.sleep(random);
@@ -58,9 +53,9 @@ public class GetAssetsHandler implements Handler<RoutingContext>
 		}
 		catch (InterruptedException e)
 		{
-			LOG.error("InterruptedException caught",
-					e);
-			Thread.currentThread().interrupt();
+			LOG.error("InterruptedException caught", e);
+			Thread.currentThread()
+					.interrupt();
 		}
 	}
 }

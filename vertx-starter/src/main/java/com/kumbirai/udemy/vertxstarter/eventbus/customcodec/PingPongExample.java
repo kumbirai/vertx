@@ -13,10 +13,8 @@ public class PingPongExample
 	public static void main(String[] args)
 	{
 		var vertx = Vertx.vertx();
-		vertx.deployVerticle(new PingVerticle(),
-				logOnError());
-		vertx.deployVerticle(new PongVerticle(),
-				logOnError());
+		vertx.deployVerticle(new PingVerticle(), logOnError());
+		vertx.deployVerticle(new PongVerticle(), logOnError());
 	}
 
 	private static Handler<AsyncResult<String>> logOnError()
@@ -25,8 +23,7 @@ public class PingPongExample
 		{
 			if (ar.failed())
 			{
-				LOG.error("err",
-						ar.cause());
+				LOG.error("err", ar.cause());
 			}
 		};
 	}

@@ -26,38 +26,33 @@ class TestMainVerticle
 	@BeforeEach
 	void deploy_verticle(Vertx vertx, VertxTestContext testContext)
 	{
-		vertx.deployVerticle(new MainVerticle(),
-				testContext.succeeding(id -> testContext.completeNow()));
+		vertx.deployVerticle(new MainVerticle(), testContext.succeeding(id -> testContext.completeNow()));
 	}
 
 	@Timeout(value = 10,
-			timeUnit = TimeUnit.SECONDS)
+			 timeUnit = TimeUnit.SECONDS)
 	@Test
 	void can_connect_to_web_socket_server(Vertx vertx, VertxTestContext context) throws Throwable
 	{
 		var client = vertx.createHttpClient();
 
-		client.webSocket(8900,
-						"localhost",
-						WebSocketHandler.PATH)
+		client.webSocket(8900, "localhost", WebSocketHandler.PATH)
 				.onFailure(context::failNow)
 				.onComplete(context.succeeding(ws ->
-				{
-					ws.handler(data ->
-					{
-						final var receivedData = data.toString();
-						LOG.debug("Received message: {}",
-								receivedData);
-						assertEquals("Connected!",
-								receivedData);
-						client.close();
-						context.completeNow();
-					});
-				}));
+											   {
+												   ws.handler(data ->
+															  {
+																  final var receivedData = data.toString();
+																  LOG.debug("Received message: {}", receivedData);
+																  assertEquals("Connected!", receivedData);
+																  client.close();
+																  context.completeNow();
+															  });
+											   }));
 	}
 
 	@Timeout(value = 10,
-			timeUnit = TimeUnit.SECONDS)
+			 timeUnit = TimeUnit.SECONDS)
 	@Test
 	void can_receive_multiple_messages(Vertx vertx, VertxTestContext context) throws Throwable
 	{
@@ -65,29 +60,26 @@ class TestMainVerticle
 
 		final AtomicInteger counter = new AtomicInteger(0);
 		client.webSocket(new WebSocketConnectOptions().setHost("localhost")
-						.setPort(8900)
-						.setURI(WebSocketHandler.PATH))
+								 .setPort(8900)
+								 .setURI(WebSocketHandler.PATH))
 				.onFailure(context::failNow)
 				.onComplete(context.succeeding(ws ->
-				{
-					ws.handler(data ->
-					{
-						final var receivedData = data.toString();
-						LOG.debug("Received message: {}",
-								receivedData);
-						var currentValue = counter.getAndIncrement();
-						if (currentValue >= EXPECTED_MESSAGES)
-						{
-							client.close();
-							context.completeNow();
-						}
-						else
-						{
-							LOG.debug("not enough messages yet... ({}/{})",
-									currentValue,
-									EXPECTED_MESSAGES);
-						}
-					});
-				}));
+											   {
+												   ws.handler(data ->
+															  {
+																  final var receivedData = data.toString();
+																  LOG.debug("Received message: {}", receivedData);
+																  var currentValue = counter.getAndIncrement();
+																  if (currentValue >= EXPECTED_MESSAGES)
+																  {
+																	  client.close();
+																	  context.completeNow();
+																  }
+																  else
+																  {
+																	  LOG.debug("not enough messages yet... ({}/{})", currentValue, EXPECTED_MESSAGES);
+																  }
+															  });
+											   }));
 	}
 }

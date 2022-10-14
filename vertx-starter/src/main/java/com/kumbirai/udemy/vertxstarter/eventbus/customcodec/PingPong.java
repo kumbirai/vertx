@@ -26,29 +26,24 @@ public class PingPong extends AbstractVerticle
 	@Override
 	public void start(Promise<Void> startPromise) throws Exception
 	{
-		vertx.deployVerticle(new PingVerticle(),
-				logOnError());
-		vertx.deployVerticle(new PongVerticle(),
-				logOnError());
+		vertx.deployVerticle(new PingVerticle(), logOnError());
+		vertx.deployVerticle(new PongVerticle(), logOnError());
 
-		vertx.setPeriodic(1000,
-				id ->
-				{
-					try
-					{
-						var response = httpClient.send(HttpRequest.newBuilder()
-										.uri(URI.create("http://localhost:8888/"))
-										.GET()
-										.build(),
-								HttpResponse.BodyHandlers.ofString());
-						LOG.info(response.body());
-					}
-					catch (IOException | InterruptedException e)
-					{
-						LOG.error("err",
-								e);
-					}
-				});
+		vertx.setPeriodic(1000, id ->
+		{
+			try
+			{
+				var response = httpClient.send(HttpRequest.newBuilder()
+													   .uri(URI.create("http://localhost:8888/"))
+													   .GET()
+													   .build(), HttpResponse.BodyHandlers.ofString());
+				LOG.info(response.body());
+			}
+			catch (IOException | InterruptedException e)
+			{
+				LOG.error("err", e);
+			}
+		});
 		startPromise.complete();
 	}
 
@@ -58,8 +53,7 @@ public class PingPong extends AbstractVerticle
 		{
 			if (ar.failed())
 			{
-				LOG.error("err",
-						ar.cause());
+				LOG.error("err", ar.cause());
 			}
 		};
 	}

@@ -44,9 +44,7 @@ public class WatchListRestApi
 		var accountId = context.pathParam("accountId");
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("{} for account {}",
-					context.normalizedPath(),
-					accountId);
+			LOG.debug("{} for account {}", context.normalizedPath(), accountId);
 		}
 		return accountId;
 	}

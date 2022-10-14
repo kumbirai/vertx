@@ -12,9 +12,7 @@ public class VerticleN extends AbstractVerticle
 	@Override
 	public void start(final Promise<Void> startPromise) throws Exception
 	{
-		LOG.debug("Start {} with config {}",
-				getClass().getName(),
-				config());
+		LOG.debug("Start {} with config {}", getClass().getName(), config());
 		startPromise.complete();
 	}
 }

@@ -32,8 +32,7 @@ public class PutWatchListDatabaseHandler implements Handler<RoutingContext>
 	public void handle(final RoutingContext context)
 	{
 		var accountId = WatchListRestApi.getAccountId(context);
-		LOG.debug("AccountId: {}",
-				accountId);
+		LOG.debug("AccountId: {}", accountId);
 
 		var json = context.getBodyAsJson();
 		var watchList = json.mapTo(WatchList.class);
@@ -41,45 +40,35 @@ public class PutWatchListDatabaseHandler implements Handler<RoutingContext>
 		var parameterBatch = watchList.getAssets()
 				.stream()
 				.map(asset ->
-				{
-					final Map<String, Object> parameters = new HashMap<>();
-					parameters.put("account_id",
-							accountId);
-					parameters.put("asset",
-							asset.getName());
-					return parameters;
-				})
+					 {
+						 final Map<String, Object> parameters = new HashMap<>();
+						 parameters.put("account_id", accountId);
+						 parameters.put("asset", asset.getName());
+						 return parameters;
+					 })
 				.collect(Collectors.toList());
 
 		// Transaction
 		db.withTransaction(client ->
-				// 1 - Delete all for account_id
-				SqlTemplate.forUpdate(client,
-								"DELETE FROM broker.watchlist w where w.account_id = #{account_id}")
-						.execute(Collections.singletonMap("account_id",
-								accountId))
-						.onFailure(DbResponse.errorHandler(context,
-								"Failed to clear watchlist for accountId: " + accountId))
-						.compose(deletionDone ->
-								// 2 - Add all for account_id
-								addAllForAccountId(client,
-										context,
-										parameterBatch))
-						.onFailure(DbResponse.errorHandler(context,
-								"Failed to update watchlist for accountId: " + accountId))
-						.onSuccess(result ->
-								// 3 - Both succeeded
-								context.response()
-										.setStatusCode(HttpResponseStatus.NO_CONTENT.code())
-										.end()));
+								   // 1 - Delete all for account_id
+								   SqlTemplate.forUpdate(client, "DELETE FROM broker.watchlist w where w.account_id = #{account_id}")
+										   .execute(Collections.singletonMap("account_id", accountId))
+										   .onFailure(DbResponse.errorHandler(context, "Failed to clear watchlist for accountId: " + accountId))
+										   .compose(deletionDone ->
+															// 2 - Add all for account_id
+															addAllForAccountId(client, context, parameterBatch))
+										   .onFailure(DbResponse.errorHandler(context, "Failed to update watchlist for accountId: " + accountId))
+										   .onSuccess(result ->
+															  // 3 - Both succeeded
+															  context.response()
+																	  .setStatusCode(HttpResponseStatus.NO_CONTENT.code())
+																	  .end()));
 	}
 
 	private Future<SqlResult<Void>> addAllForAccountId(final SqlConnection client, final RoutingContext context, final List<Map<String, Object>> parameterBatch)
 	{
-		return SqlTemplate.forUpdate(client,
-						"INSERT INTO broker.watchlist VALUES (#{account_id},#{asset})" + " ON CONFLICT (account_id, asset) DO NOTHING")
+		return SqlTemplate.forUpdate(client, "INSERT INTO broker.watchlist VALUES (#{account_id},#{asset})" + " ON CONFLICT (account_id, asset) DO NOTHING")
 				.executeBatch(parameterBatch)
-				.onFailure(DbResponse.errorHandler(context,
-						"Failed to insert into watchlist"));
+				.onFailure(DbResponse.errorHandler(context, "Failed to insert into watchlist"));
 	}
 }
